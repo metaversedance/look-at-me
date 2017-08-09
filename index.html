@@ -1,17 +1,28 @@
 <head>
   <title>My A-Frame Scene</title>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+ 
+<!--    <script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
+ -->     <script src="https://rawgit.com/ngokevin/aframe-entity-generator-component/master/dist/aframe-entity-generator-component.min.js"></script>
+   <script src="https://rawgit.com/ngokevin/aframe-randomizer-components/master/dist/aframe-randomizer-components.min.js"></script>
+     <script src="https://rawgit.com/ngokevin/aframe-look-at-component/master/dist/aframe-look-at-component.min.js"></script>
+
+
+
+
+<!--     <script src="aframe.js"></script>
+ -->
   <script type="text/javascript">
 
-(function(module, exports) {
+// (function(module, exports) {
 
-  var debug = AFRAME.utils.debug;
-  var coordinates = AFRAME.utils.coordinates;
+//   var debug = AFRAME.utils.debug;
+//   var coordinates = AFRAME.utils.coordinates;
 
-  var warn = debug('components:look-at:warn');
-  var isCoordinate = coordinates.isCoordinate;
+//   var warn = debug('components:look-at:warn');
+//   var isCoordinate = coordinates.isCoordinate;
 
-  delete AFRAME.components['look-at'];
+//   delete AFRAME.components['look-at'];
 
   /**
    * Look-at component.
@@ -22,96 +33,121 @@
    * If tracking an object via setting the component value via a selector, look-at will register
    * a behavior to the scene to update rotation on every tick.
    */
-  AFRAME.registerComponent('look-at', {
-    schema: {
-      default: '',
+//   AFRAME.registerComponent('look-at', {
+//     schema: {
+//       default: '',
 
-      parse: function (value) {
-        // A static position to look at.
-        if (isCoordinate(value) || typeof value === 'object') {
-          return coordinates.parse(value);
-        }
-        // A selector to a target entity.
-        return value;
-      },
+//       parse: function (value) {
+//         debugger;
+//         // A static position to look at.
+//         if (isCoordinate(value) || typeof value === 'object') {
+//           return coordinates.parse(value);
+//         }
+//         // A selector to a target entity.
+//         return value;
+//       },
 
-      stringify: function (data) {
-        if (typeof data === 'object') {
-          return coordinates.stringify(data);
-        }
-        return data;
-      }
-    },
+//       stringify: function (data) {
+//         if (typeof data === 'object') {
+//           return coordinates.stringify(data);
+//         }
+//         return data;
+//       }
+//     },
 
-    init: function () {
-      this.target3D = null;
-      this.vector = new THREE.Vector3();
-    },
+//     init: function () {
+//       this.target3D = null;
+//       this.vector = new THREE.Vector3();
+//     },
 
-    /**
-     * If tracking an object, this will be called on every tick.
-     * If looking at a position vector, this will only be called once (until further updates).
-     */
-    update: function () {
-      var self = this;
-      var target = self.data;
-      var object3D = self.el.object3D;
-      var targetEl;
+//     /**
+//      * If tracking an object, this will be called on every tick.
+//      * If looking at a position vector, this will only be called once (until further updates).
+//      */
+//     update: function () {
+//       var self = this;
+//       var target = self.data;
+//       var object3D = self.el.object3D;
+//       var targetEl;
 
-      // No longer looking at anything (i.e., look-at="").
-      if (!target || (typeof target === 'object' && !Object.keys(target).length)) {
-        return self.remove();
-      }
+//       // No longer looking at anything (i.e., look-at="").
+//       if (!target || (typeof target === 'object' && !Object.keys(target).length)) {
+//         return self.remove();
+//       }
 
-      // Look at a position.
-      if (typeof target === 'object') {
-        return object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-      }
+//       // Look at a position.
+//       if (typeof target === 'object') {
+//         return object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+//       }
 
-      // Assume target is a string.
-      // Query for the element, grab its object3D, then register a behavior on the scene to
-      // track the target on every tick.
-      targetEl = self.el.sceneEl.querySelector(target);
-      if (!targetEl) {
-        warn('"' + target + '" does not point to a valid entity to look-at');
-        return;
-      }
-      if (!targetEl.hasLoaded) {
-        return targetEl.addEventListener('loaded', function () {
-          self.beginTracking(targetEl);
-        });
-      }
-      return self.beginTracking(targetEl);
-    },
+//       // Assume target is a string.
+//       // Query for the element, grab its object3D, then register a behavior on the scene to
+//       // track the target on every tick.
+//       targetEl = self.el.sceneEl.querySelector(target);
+//       if (!targetEl) {
+//         warn('"' + target + '" does not point to a valid entity to look-at');
+//         return;
+//       }
+//       if (!targetEl.hasLoaded) {
+//         return targetEl.addEventListener('loaded', function () {
+//           self.beginTracking(targetEl);
+//         });
+//       }
+//       console.log("targetEl",targetEl)
+//       return self.beginTracking(targetEl);
+//     },
 
-    tick: function (t) {
-      // Track target object position. Depends on parent object keeping global transforms up
-      // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
-      var target3D = this.target3D;
-      if (target3D) {
-        return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
-      }
-    },
+//     tick: function (t) {
+//       // Track target object position. Depends on parent object keeping global transforms up
+//       // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
+//       var target3D = this.target3D;
+//       if (target3D) {
 
-    beginTracking: function (targetEl) {
-      this.target3D = targetEl.object3D;
-    }
-  });
+//         return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
+//       }
+//     },
+
+//     beginTracking: function (targetEl) {
+//       this.target3D = targetEl.object3D;
+//     }
+//   });
 
 
-/***/ })()
+
+
+
+
+
+// /***/ })()
   </script>
 
 </head>
 
 <body>
+  
   <a-scene>
-        <a-sky></a-sky>
-        <a-entity camera="userHeight: 1.3; near: .01; far: 500" universal-controls position="0 0 5" id="player" wasd-controls></a-entity>
-        <a-grid></a-grid>
+    <a-assets>
+        
+        <a-asset-item id="eye-model" src="models/two-eyes.dae"></a-asset-item>
+        <a-mixin id ="look-at-player" look-at="#player"></a-mixin>
 
-    <a-entity id="eye" geometry="primitive: box" 
-              look-at="#player" material="src: url(eyes.jpg)"></a-entity>
+        <a-mixin id="eye-model-collada" collada-model="#eye-model">
+
+        
+
+        <a-mixin id="random-position" random-spherical-position="radius: 1.5"></a-mixin>
+
+
+    </a-assets>
+
+    <a-camera id="player">
+    </a-camera>
+    <a-collada-model src="#eye-model" look-at="#player"></a-collada-model>
+
+   <a-entity entity-generator="mixin: eye-model-collada look-at-player random-position; num: 100"></a-entity>
+
+
+
 
 
   </a-scene>
