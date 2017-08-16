@@ -1,373 +1,39 @@
 <head>
-  <title>My A-Frame Scene</title>
+    <title>Look At Me</title>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
- 
-<!--    <script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
- -->     <script src="https://rawgit.com/ngokevin/aframe-entity-generator-component/master/dist/aframe-entity-generator-component.min.js"></script>
-   <script src="https://rawgit.com/ngokevin/aframe-randomizer-components/master/dist/aframe-randomizer-components.min.js"></script>
-     <script src="https://rawgit.com/ngokevin/aframe-look-at-component/master/dist/aframe-look-at-component.min.js"></script>
-<script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.9.0/dist/aframe-extras.min.js"></script>
 
+    <script src="https://rawgit.com/ngokevin/aframe-entity-generator-component/master/dist/aframe-entity-generator-component.min.js"></script>
+    <script src="https://rawgit.com/ngokevin/aframe-randomizer-components/master/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://rawgit.com/ngokevin/aframe-look-at-component/master/dist/aframe-look-at-component.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.9.0/dist/aframe-extras.min.js"></script>
 
-
-
-<!--     <script src="aframe.js"></script>
- -->
-  <script type="text/javascript">
-
-// // (function(module, exports) {
-
-// //   var debug = AFRAME.utils.debug;
-// //   var coordinates = AFRAME.utils.coordinates;
-
-// //   var warn = debug('components:look-at:warn');
-// //   var isCoordinate = coordinates.isCoordinate;
-
-// //   delete AFRAME.components['look-at'];
-
-//   /**
-//    * Look-at component.
-//    *
-//    * Modifies rotation to either track another entity OR do a one-time turn towards a position
-//    * vector.
-//    *
-//    * If tracking an object via setting the component value via a selector, look-at will register
-//    * a behavior to the scene to update rotation on every tick.
-//    */
-// //   AFRAME.registerComponent('look-at', {
-// //     schema: {
-// //       default: '',
-
-// //       parse: function (value) {
-// //         debugger;
-// //         // A static position to look at.
-// //         if (isCoordinate(value) || typeof value === 'object') {
-// //           return coordinates.parse(value);
-// //         }
-// //         // A selector to a target entity.
-// //         return value;
-// //       },
-
-// //       stringify: function (data) {
-// //         if (typeof data === 'object') {
-// //           return coordinates.stringify(data);
-// //         }
-// //         return data;
-// //       }
-// //     },
-
-// //     init: function () {
-// //       this.target3D = null;
-// //       this.vector = new THREE.Vector3();
-// //     },
-
-// //     /**
-// //      * If tracking an object, this will be called on every tick.
-// //      * If looking at a position vector, this will only be called once (until further updates).
-// //      */
-// //     update: function () {
-// //       var self = this;
-// //       var target = self.data;
-// //       var object3D = self.el.object3D;
-// //       var targetEl;
-
-// //       // No longer looking at anything (i.e., look-at="").
-// //       if (!target || (typeof target === 'object' && !Object.keys(target).length)) {
-// //         return self.remove();
-// //       }
-
-// //       // Look at a position.
-// //       if (typeof target === 'object') {
-// //         return object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-// //       }
-
-// //       // Assume target is a string.
-// //       // Query for the element, grab its object3D, then register a behavior on the scene to
-// //       // track the target on every tick.
-// //       targetEl = self.el.sceneEl.querySelector(target);
-// //       if (!targetEl) {
-// //         warn('"' + target + '" does not point to a valid entity to look-at');
-// //         return;
-// //       }
-// //       if (!targetEl.hasLoaded) {
-// //         return targetEl.addEventListener('loaded', function () {
-// //           self.beginTracking(targetEl);
-// //         });
-// //       }
-// //       console.log("targetEl",targetEl)
-// //       return self.beginTracking(targetEl);
-// //     },
-
-// //     tick: function (t) {
-// //       // Track target object position. Depends on parent object keeping global transforms up
-// //       // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
-// //       var target3D = this.target3D;
-// //       if (target3D) {
-
-// //         return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
-// //       }
-// //     },
-
-// //     beginTracking: function (targetEl) {
-// //       this.target3D = targetEl.object3D;
-// //     }
-// //   });
-
-
-
-
-
-
-
-// /***/ })()
-
-(function(){
-
-  AFRAME.registerComponent('eyes',{
-    init: function() {
-      var eye1 = document.createElement("a-entity");
-      var eye2 = document.createElement("a-entity");
-
-      eye1.setAttribute("collada-model","#eye-model")
-      // eye1.setAttribute("geometry","primitive: box")
-
-      eye1.setAttribute("position","-0.1 0 0")
-      eye1.setAttribute("look-at","#player")
-
-      eye2.setAttribute("collada-model","#eye-model")
-      // eye2.setAttribute("geometry","primitive: box")
-
-      eye2.setAttribute("look-at","#player")
-      eye2.setAttribute("position","0.1 0 0")
-
-      this.el.appendChild(eye1);
-      // this.el.appendChild(eye2);
-
-    },
-    dependencies: ["collada-model", "look-at"]
-
-  })
-
-  AFRAME.registerComponent("random-blink",{
-    init: function() {
-      this.getRandom = function(min, max) {
-        return Math.random() * (max - min) + min;
-      }
-      this.msTillNextBlink = this.getRandom(3000,9000);
-      this.timeCounter = 0;
-
-    },
-    tick: function(time,timeDelta) {
-      this.timeCounter+=timeDelta;
-      if(this.timeCounter > this.msTillNextBlink) {
-        this.timeCounter=0;
-        this.msTillNextBlink = this.getRandom(3000,9000);
-        this.el.setAttribute("visible",false)
-        var self = this;
-        setTimeout(function(){
-            self.el.setAttribute("visible",true)
-
-        },200)
-      }
-
-    }
-  })
-AFRAME.registerComponent('position-on-cube', {
-    schema: {
-      scale: {type: "number", default: 5},
-      divisions: {type: "number", default: 3},
-      eyeDistance: {type: "number", default: .2}
-
-    },
-
-    init: function() {
-      var scale =  this.data.scale;
-      var divisions =  this.data.divisions;
-      var eyeDistance = this.data.eyeDistance;
-      var parentEl =  this.el.parentEl;
-
-
-      if(!parentEl.cubeVertexCount) {
-        parentEl.cubeVertexCount = 0;
-      }
-      if(!parentEl.cubeGeo) {
-        parentEl.cubeGeo =  new THREE.BoxGeometry(scale,scale,scale,divisions,divisions+1,divisions+2);
-        parentEl.pairCubeGeo = [];
-         var originDist =  this.data.scale/2
-        parentEl.cubeGeo.vertices.forEach(function(vertex){
-          var eye1, eye2;
-          //if vertex is on front or back of cube
-          if( vertex.z === originDist) {
-            eye1 = {x: vertex.x + eyeDistance, y: vertex.y, z: vertex.z };
-            eye2 = {x: vertex.x - eyeDistance, y: vertex.y, z: vertex.z}
-          } 
-          //if vertex is on right or left side of cube 
-
-          if (vertex.x === -1 * originDist|| vertex.x === originDist) {
-            eye1 = {x: vertex.x, y: vertex.y, z: vertex.z + eyeDistance };
-            eye2 = {x: vertex.x, y: vertex.y, z: vertex.z - eyeDistance}
-
-
-          } 
-          //if vertex is top or bottom of cube
-
-          if(vertex.y === -1 * originDist || vertex.y === originDist) {
-
-            eye1 = {x: vertex.x + eyeDistance, y: vertex.y, z: vertex.z };
-            eye2 = {x: vertex.x - eyeDistance, y: vertex.y, z: vertex.z}
-
-          }
-          parentEl.pairCubeGeo.push(eye1);
-          parentEl.pairCubeGeo.push(eye2);
-        });
-
-      }
-    },
-    update: function () {
-      var parentEl =  this.el.parentEl;
-      var cubeToPositionTo =  parentEl.pairCubeGeo;
-      if(parentEl.cubeVertexCount > cubeToPositionTo.length) {
-        parentEl.cubeVertexCount = 0;
-        return
-      }
-
-
-      var vertex =  cubeToPositionTo[parentEl.cubeVertexCount];
-
-      parentEl.cubeVertexCount++;
-      
-      var position = {
-        x: vertex.x,
-        y: vertex.y,
-        z: vertex.z
-      }
-
-      this.el.setAttribute('position', position);
-
-
-      
-    },
-    multiple: true
-  });
-AFRAME.registerComponent('random-spherical-position-for-eyes', {
-    schema: {
-      radius: {default: 10},
-      startX: {default: 0},
-      lengthX: {default: 360},
-      startY: {default: 0},
-      lengthY: {default: 360}
-    },
-
-    update: function () {
-      var parentEl = this.el.parentEl;
-      var data = this.data;
-
-      //if eye 1: generate random position
-       xAngle = THREE.Math.degToRad(Math.random() * data.lengthX + data.startX);
-       yAngle = THREE.Math.degToRad(Math.random() * data.lengthY + data.startY);
-      
-
-      var position = {
-        x: data.radius * Math.cos(xAngle) * Math.sin(yAngle),
-        y: data.radius * Math.sin(xAngle) * Math.sin(yAngle),
-        z: data.radius * Math.cos(yAngle)
-      }
-
-      if(!parentEl.lastEyePosition) {
-        parentEl.lastEyePosition = position;
-
-      } 
-      if(!parentEl.eyeNum) {
-        parentEl.eyeNum =  0;
-      }
-
-
-      if(parentEl.eyeNum < 2) {
-        parentEl.eyeNum++
-      } else {
-        parentEl.eyeNum = 1;
-      }
-      if(parentEl.eyeNum === 2) {
-        var lastPosition = parentEl.lastEyePosition
-        lastPosition.x+=.2
-        position = lastPosition  ;
-
-      }
-
-      parentEl.lastEyePosition = position;
-
-
-
-      //if eye 2: set position to last eye generated position.x+=.2
-
-
-
-
-
-    
-
-
-      this.el.setAttribute('position', position);
-    }
-  });
-
-
-
-})()
-  </script>
+    <script type="text/javascript" src="js/register-custom-components.js"></script>
 
 </head>
 
 <body>
-  
-  <a-scene>
-    <a-assets>
-        
-        <a-asset-item id="eye-model" src="models/eye-joined.dae"></a-asset-item>
-        <a-mixin id ="look-at-player" look-at="#player"></a-mixin>
 
-        <a-mixin id="eye-model-collada" collada-model="#eye-model">
+    <a-scene>
+        <a-assets>
+            <a-asset-item id="eye-model" src="models/eye-joined.dae"></a-asset-item>
+            <a-mixin id="look-at-player" look-at="#player"></a-mixin>
 
-        <a-mixin id="two-eyes-lookat-player" eyes>
-        <a-mixin id="cube" geometry="primitive: box">
-
-        <a-mixin id="random-blink" random-blink>
-
-                <a-mixin id="random-spherical-position-for-eyes-lg" random-spherical-position-for-eyes="radius: 1.3">
-
-        <a-mixin id="random-spherical-position-for-eyes-sm" random-spherical-position-for-eyes="radius: 1">
-        <a-mixin id="random-sphere-position-1" random-spherical-position="radius: 1  ;lengthY: 180"></a-mixin>
-          <a-mixin id="random-sphere-position-2" random-spherical-position="radius: 1.3  ;lengthY: 180"></a-mixin>
-        <a-mixin id="position-on-cube-lg" position-on-cube__lg="scale:1.5; divisions: 3">
-        <a-mixin id="position-on-cube-sm" position-on-cube__sm="scale:1.1; divisions: 3">
-        <a-mixin id="half-scale" scale=".5 .5 .5">
+            <a-mixin id="eye-model-collada" collada-model="#eye-model">
 
 
-        <a-mixin id="random-position" random-position="max: 2 2 2">
+            <a-mixin id="position-on-cube-lg" position-on-cube__lg="scale:1.5; divisions: 3">
+            <a-mixin id="half-scale" scale=".5 .5 .5">
+
+            <a-mixin id="random-position" random-position="max: 2 2 2">
+        </a-assets>
 
 
-    </a-assets>
-  <a-sky color="black"></a-sky>
-    <a-camera position="0 -1.4 0" >
-      <a-box position="0 0 -0.35" scale=".1 .1 .1" id ="player" visible="false"></a-box>
-    </a-camera>
-  
-    <a-entity entity-generator="mixin: eye-model-collada look-at-player position-on-cube-lg half-scale; num:200"></a-entity>
+        <a-sky color="black"></a-sky>
+        <a-camera position="0 -1.4 0">
+            <a-box position="0 0 -0.35" scale=".1 .1 .1" id="player" visible="false"></a-box>
+        </a-camera>
 
-<!--     <a-entity entity-generator="mixin: eye-model-collada look-at-player position-on-cube-sm half-scale; num:216"></a-entity>
- -->
-<!--     <a-entity entity-generator="mixin: eye-model-collada  look-at-player random-spherical-position-for-eyes random-blink; num: 100"></a-entity>
- -->
+        <a-entity entity-generator="mixin: eye-model-collada look-at-player position-on-cube-lg half-scale; num:192"></a-entity>
 
-
-   
-<!--   <a-entity entity-generator="mixin: cube look-at-player random-sphere-position; num: 100"></a-entity>
- -->
-
-
-
-
-
-
-  </a-scene>
+    </a-scene>
 </body>
